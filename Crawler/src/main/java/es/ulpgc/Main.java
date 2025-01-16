@@ -11,14 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Initialize Hazelcast
-        Config config = new Config();
-        config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-        config.getNetworkConfig().getJoin().getTcpIpConfig()
-                .setEnabled(true)
-                .addMember("192.168.14.45:5701") // Replace with the actual IP addresses
-                .addMember("192.168.14.16:5701")
-                .addMember("192.168.14.15:5701");
-        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance(config);
+        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance();
         IQueue<Integer> taskQueue = hazelcast.getQueue("bookIdQueue");
         IMap<Integer, Boolean> progressMap = hazelcast.getMap("progressMap");
 
