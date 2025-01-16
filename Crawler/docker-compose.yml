@@ -4,6 +4,7 @@ services:
     container_name: hazelcast_crawler
     ports:
       - "5701:5701"
+      - "5701:5701/udp"  # Allow UDP traffic for multicast
     volumes:
       - hazelcast_data_crawler:/opt/hazelcast/data
     networks:
