@@ -1,0 +1,29 @@
+services:
+  query-engine-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENTRY_POINT: "es.ulpgc.entrypoint.ApiRestMain"
+    environment:
+      - SERVER_PORT=8080
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - C:/Users/Usuario/Desktop/BigData/SearchEngine_Stage3/index_content.csv:/app/data/index_content.csv
+      - C:/Users/Usuario/Desktop/BigData/SearchEngine_Stage3/index_metadata.csv:/app/data/index_metadata.csv
+    networks:
+      - query-engine-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - query-engine-api
+    networks:
+      - query-engine-network

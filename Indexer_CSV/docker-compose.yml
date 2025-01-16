@@ -1,0 +1,48 @@
+services:
+  hazelcast:
+    image: hazelcast/hazelcast:latest
+    container_name: hazelcast_indexer
+    ports:
+      - "5702:5701"
+    volumes:
+      - hazelcast_data_indexer:/opt/hazelcast/data
+    networks:
+      - hazelcast_network_indexer
+
+  indexer1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indexer1
+    depends_on:
+      - hazelcast
+    environment:
+      - HAZELCAST_MEMBER=hazelcast
+      - LAST_PROCESSED_FILE=/shared/LastProcessed.txt
+    volumes:
+      - shared_csv:/app/csv
+    networks:
+      - hazelcast_network_indexer
+
+  indexer2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indexer2
+    depends_on:
+      - hazelcast
+    environment:
+      - HAZELCAST_MEMBER=hazelcast
+      - LAST_PROCESSED_FILE=/shared/LastProcessed.txt
+    volumes:
+      - shared_csv:/app/csv
+    networks:
+      - hazelcast_network_indexer
+
+volumes:
+  hazelcast_data_indexer:
+  shared_csv:
+
+networks:
+  hazelcast_network_indexer:
+    driver: bridge
